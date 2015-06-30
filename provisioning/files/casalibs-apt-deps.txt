@@ -1,0 +1,12 @@
+build-essential
+cmake gfortran libncurses5-dev libreadline-dev flex
+bison libblas-dev liblapacke-dev libcfitsio3-dev wcslib-dev
+libhdf5-serial-dev libfftw3-dev
+libboost-python-dev
+subversion
+git-svn
+cmake
+scons
+g++
+libopenmpi-dev
+

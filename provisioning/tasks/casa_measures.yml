@@ -1,0 +1,29 @@
+- name: Create casa_measures dir
+  file:
+    path: "{{casalibs_repo_dir}}/casa_measures/"
+    state: directory
+  register: casa_measures_dir
+  tags:
+    - always #always run this, variable needed for other sections
+
+- name: Grab casa_measures tarball
+  get_url:
+    url: "ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures_20150629-000001.ztar"
+    dest: "{{ casa_measures_dir.path }}/WSRT_Measures_20150629-000001.ztar"
+  register: casa_measures_tarball
+
+- name: Create casa_measures data-dir
+  file:
+    path: "{{ casa_measures_dir.path }}/data"
+    state: directory
+  register: casa_measures_datadir
+  tags:
+    - always #always run this, variable needed for other sections
+
+- name: Unpack casa_measures tarball
+  unarchive:
+    copy: no
+    src: "{{ casa_measures_tarball.dest }}"
+    dest: "{{ casa_measures_datadir.path }}"
+  register: casa_measures_checkout
+  when: casa_measures_tarball|changed

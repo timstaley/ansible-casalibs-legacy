@@ -1,0 +1,24 @@
+- hosts: casalibsvm
+  vars:
+    casalibs_apt_deps: "{{ lookup('file', 'files/casalibs-apt-deps.txt').split() }}"
+    casalibs_repo_dir: "/opt/repos"
+    casalibs_install_prefix: "/opt/soft/casalibs"
+    casacore_version: "2.0.1"
+    casacore_install_prefix: "{{casalibs_install_prefix}}/casacore-{{casacore_version}}"
+  tasks:
+    - include: tasks/base.yml tags=base
+
+    - name: Install apt dependencies.
+      sudo: yes
+      apt: name={{item}} update_cache=yes cache_valid_time=600
+      with_items: casalibs_apt_deps
+
+    - name: Create repo dir with correct permissions
+      file: path={{item}} state=directory mode=0755 owner={{ansible_user_id}}
+      with_items:
+        - "{{ casalibs_repo_dir }}"
+        - "{{ casalibs_install_prefix }}"
+      sudo: yes
+
+    - include: tasks/casa_measures.yml tags=casa_measures
+    - include: tasks/casacore.yml tags=casacore
