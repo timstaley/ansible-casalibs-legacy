@@ -1,0 +1,90 @@
+- set_fact:
+    python_casacore_checkout: "{{casalibs_repo_dir}}/python-casacore-{{python_casacore_version}}"
+- set_fact:
+    python_casacore_wheeldir: "{{python_casacore_checkout}}/dist"
+
+- name: Grab python-casacore release tarball
+  get_url:
+    url: "https://github.com/casacore/python-casacore/archive/v{{python_casacore_version}}.tar.gz"
+    dest: "{{python_casacore_checkout}}.tar.gz"
+  register: python_casacore_tarball
+
+- name: Unpack python-casacore tarball
+  unarchive:
+    copy: no
+    src: "{{ python_casacore_tarball.dest }}"
+    dest: "{{casalibs_repo_dir}}/"
+    creates: "{{python_casacore_checkout}}"
+
+
+# OK, here's where things get a little messy
+# First, we must run build_ext separately, so we can pass the non-standard
+# include dirs for casacore.
+- name: Build python-casacore extensions
+  command: >
+            python setup.py build_ext
+            -I{{casacore_install_prefix}}/include
+            -L{{casacore_install_prefix}}/lib
+  args:
+    chdir: "{{python_casacore_checkout}}"
+    creates: "{{python_casacore_checkout}}/build"
+  register: python_casacore_build_ext
+
+- name: Clean up failed python-casacore build
+  file: path="{{python_casacore_checkout}}/build" state=absent
+  when: python_casacore_build_ext|failed
+
+# Now we use the pre-built extensions to produce a wheel-binary-package,
+# because
+# A. it might come in handy and
+# B. we'd like to use pip install, but pip will ignore the pre-built extensions,
+# try to rebuild without the correct casacore paths, and crash.
+# So we'll pip install from the wheel instead...
+- name: Build python-casacore wheel
+  command: >
+            python setup.py bdist_wheel
+  args:
+    chdir: "{{python_casacore_checkout}}"
+    creates: "{{python_casacore_wheeldir}}"
+  register: python_casacore_wheel
+
+- name: Clean up failed python-casacore wheel-gen dist-dir
+  file: path="{{python_casacore_wheeldir}}" state=absent
+  when: python_casacore_wheel|failed
+
+# Nearly done. We can re-use the wheel later if required, but my preferred
+# method for casatools is to simply add it to PYTHONPATH.
+# Unforunately, python setup.py install refuses to extract to an arbitrary path.
+# So we either install to an arbitrary virtualenv (default), or maybe we install
+# to an actually useful virtualenv if this is re-used in a larger playbook.
+- name: Install python-casacore into virtualenv of choice
+  pip:
+    name: python-casacore
+    virtualenv: "{{python_casacore_venv}}"
+    virtualenv_site_packages: "{{python_casacore_venv_site_packages}}"
+    extra_args: >
+                  --use-wheel
+                  --find-links=file://{{python_casacore_wheeldir}}
+  register: python_casacore_install
+
+
+- set_fact:
+    python_casacore_pathdir: "{{python_casacore_venv}}/lib/python{{ansible_python_version[:3]}}/site-packages"
+
+- name: Get numpy system version
+  shell: "pip freeze | grep numpy | cut -d '=' -f3"
+  register: system_numpy_ver
+  when: python_casacore_venv_site_packages == False
+  changed_when: False
+
+- set_fact:
+    system_numpy_ver: "{{system_numpy_ver.stdout}}"
+
+- name: Install numpy matching system-version into virtualenv if required
+  pip:
+    name: numpy
+    version: "{{system_numpy_ver}}"
+    virtualenv: "{{python_casacore_venv}}"
+  when: python_casacore_venv_site_packages == False
+
+

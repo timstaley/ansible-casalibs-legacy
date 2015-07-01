@@ -1,10 +1,17 @@
 - hosts: casalibsvm
+
   vars:
     casalibs_apt_deps: "{{ lookup('file', 'files/casalibs-apt-deps.txt').split() }}"
     casalibs_repo_dir: "/opt/repos"
     casalibs_install_prefix: "/opt/soft/casalibs"
     casacore_version: "2.0.1"
     casacore_install_prefix: "{{casalibs_install_prefix}}/casacore-{{casacore_version}}"
+    casarest_svn_rev: "8765"
+    casarest_install_prefix: "{{casalibs_install_prefix}}/casarest-r{{casarest_svn_rev}}"
+    python_casacore_version: "2.0.0"
+    python_casacore_venv: "{{casalibs_install_prefix}}/pycasacore-{{python_casacore_version}}-venv"
+    python_casacore_venv_site_packages: False
+
   tasks:
     - include: tasks/base.yml tags=base
 
@@ -12,6 +19,7 @@
       sudo: yes
       apt: name={{item}} update_cache=yes cache_valid_time=600
       with_items: casalibs_apt_deps
+      tags: base
 
     - name: Create repo dir with correct permissions
       file: path={{item}} state=directory mode=0755 owner={{ansible_user_id}}
@@ -22,3 +30,5 @@
 
     - include: tasks/casa_measures.yml tags=casa_measures
     - include: tasks/casacore.yml tags=casacore
+    - include: tasks/casarest.yml tags=casarest
+    - include: tasks/python-casacore.yml tags=python-casacore

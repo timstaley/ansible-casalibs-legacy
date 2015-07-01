@@ -32,7 +32,7 @@
               -DDATA_DIR={{casa_measures_datadir.path}} \
               -DUSE_HDF5=ON \
               -DUSE_THREADS=ON \
-#              -DBUILD_PYTHON=ON \
+              -DBUILD_PYTHON=ON \
   args:
     chdir: "{{ casacore_build_dir.path }}"
   when: casacore_build_dir|changed

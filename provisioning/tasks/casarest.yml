@@ -1,0 +1,45 @@
+- name: Stat casarest checkout dir
+  stat:
+    path: "{{ casalibs_repo_dir }}/casarest"
+  register: casarest_checkout
+
+- name: Checkout casarest svn repo
+  subversion:
+    repo: https://svn.astron.nl/casarest
+    dest: "{{ casalibs_repo_dir }}/casarest"
+    revision: "{{ casarest_svn_rev }}"
+    export: True
+  when: casarest_checkout.stat.exists == False
+
+- name: Create casarest build-dir
+  file:
+    path: "{{casalibs_repo_dir}}/casarest/build"
+    state: directory
+  register: casarest_build_dir
+
+
+- name: Configure casarest cmake build
+  command: >
+            cmake {{casalibs_repo_dir}}/casarest/trunk/casarest \
+              -DCMAKE_INSTALL_PREFIX={{casarest_install_prefix}} \
+              -DCASACORE_ROOT_DIR={{casacore_install_prefix}} \
+              -DBUILD_ALL=1
+  args:
+    chdir: "{{ casarest_build_dir.path }}"
+  when: casarest_build_dir|changed
+  register: casarest_cmake
+  #Ignore errors so we can cleanup the build-dir if this fails:
+  ignore_errors: True
+
+- name: Do casarest make install
+  shell: "make install -j{{ansible_processor_cores}} > make_install_stdout.log"
+  args:
+    chdir: "{{ casarest_build_dir.path }}"
+  when: casarest_build_dir|changed
+  register: casarest_make_install
+  ignore_errors: True
+
+
+- name: Clean up failed build
+  file: path="{{ casarest_build_dir.path }}" state=absent
+  when: casarest_cmake|failed or casarest_make_install|failed
