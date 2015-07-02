@@ -10,7 +10,7 @@
     casarest_install_prefix: "{{casalibs_install_prefix}}/casarest-r{{casarest_svn_rev}}"
     python_casacore_version: "2.0.0"
     python_casacore_venv: "{{casalibs_install_prefix}}/pycasacore-{{python_casacore_version}}-venv"
-    python_casacore_venv_site_packages: False
+    python_casacore_venv_site_packages: True
 
   tasks:
     - include: tasks/base.yml tags=base
@@ -32,3 +32,17 @@
     - include: tasks/casacore.yml tags=casacore
     - include: tasks/casarest.yml tags=casarest
     - include: tasks/python-casacore.yml tags=python-casacore
+
+    - name: Upload script to add casacore / casacore-python to path.
+      template:
+        src: templates/init-casalibs.sh
+        dest: "{{casalibs_install_prefix}}/init-casalibs.sh"
+        mode: 'ugo+r'
+      tags: scripts
+
+    - name: Check everything is working OK
+      shell: >
+              . {{casalibs_install_prefix}}/init-casalibs.sh &&
+                python -c "from casacore import measures,tables; print('A-OK');"
+      changed_when: False
+      tags: test

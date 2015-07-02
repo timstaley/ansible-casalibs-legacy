@@ -70,6 +70,8 @@
 
 - set_fact:
     python_casacore_pathdir: "{{python_casacore_venv}}/lib/python{{ansible_python_version[:3]}}/site-packages"
+  tags:
+    - always #always run this, variable needed for other sections
 
 - name: Get numpy system version
   shell: "pip freeze | grep numpy | cut -d '=' -f3"
@@ -79,6 +81,7 @@
 
 - set_fact:
     system_numpy_ver: "{{system_numpy_ver.stdout}}"
+  when: python_casacore_venv_site_packages == False
 
 - name: Install numpy matching system-version into virtualenv if required
   pip:
