@@ -10,7 +10,7 @@
     casarest_install_prefix: "{{casalibs_install_prefix}}/casarest-r{{casarest_svn_rev}}"
     python_casacore_version: "2.0.0"
     python_casacore_venv: "{{casalibs_install_prefix}}/pycasacore-{{python_casacore_version}}-venv"
-    python_casacore_venv_site_packages: True
+    python_casacore_venv_site_packages: False
 
   tasks:
     - include: tasks/base.yml tags=base
