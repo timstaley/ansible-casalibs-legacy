@@ -1,6 +1,6 @@
 build-essential
 cmake gfortran libncurses5-dev libreadline-dev flex
-bison libblas-dev liblapacke-dev libcfitsio3-dev wcslib-dev
+bison libblas-dev liblapack-dev libcfitsio3-dev wcslib-dev
 libhdf5-serial-dev libfftw3-dev
 python-numpy
 libboost-python-dev
