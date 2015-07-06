@@ -57,6 +57,14 @@
 # Unforunately, python setup.py install refuses to extract to an arbitrary path.
 # So we either install to an arbitrary virtualenv (default), or maybe we install
 # to an actually useful virtualenv if this is re-used in a larger playbook.
+
+- name: Prep a virtualenv with latest pip version
+  pip:
+    name: pip
+    state: latest
+    virtualenv: "{{python_casacore_venv}}"
+    virtualenv_site_packages: "{{python_casacore_venv_site_packages}}"
+
 - name: Install python-casacore into virtualenv of choice
   pip:
     name: python-casacore
