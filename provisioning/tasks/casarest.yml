@@ -31,7 +31,7 @@
   #Ignore errors so we can cleanup the build-dir if this fails:
   ignore_errors: True
 
-- name: Do casarest make install
+- name: "casarest make install."
   shell: "make install -j{{ansible_processor_cores}} > make_install_stdout.log"
   args:
     chdir: "{{ casarest_build_dir.path }}"

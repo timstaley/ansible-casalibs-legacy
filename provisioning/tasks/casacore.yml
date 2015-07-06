@@ -40,7 +40,7 @@
   #Ignore errors so we can cleanup the build-dir if this fails:
   ignore_errors: True
 
-- name: Do casacore make install
+- name: "casacore make install."
   shell: "make install -j{{ansible_processor_cores}} > make_install_stdout.log"
   args:
     chdir: "{{ casacore_build_dir.path }}"
