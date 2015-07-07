@@ -1,16 +1,22 @@
 - hosts: casalibsvm
 
   vars:
-    casalibs_apt_deps: "{{ lookup('file', 'files/casalibs-apt-deps.txt').split() }}"
+    casacore_version: "2.0.1"
+    casarest_svn_rev: "8765"
+    python_casacore_version: "2.0.0"
     casalibs_repo_dir: "/opt/repos"
     casalibs_install_prefix: "/opt/soft/casalibs"
-    casacore_version: "2.0.1"
-    casacore_install_prefix: "{{casalibs_install_prefix}}/casacore-{{casacore_version}}"
-    casarest_svn_rev: "8765"
-    casarest_install_prefix: "{{casalibs_install_prefix}}/casarest-r{{casarest_svn_rev}}"
-    python_casacore_version: "2.0.0"
-    python_casacore_venv: "{{casalibs_install_prefix}}/pycasacore-{{python_casacore_version}}-venv"
+
+    #Leave the venv setting undefined if you're just using PYTHONPATH:
+#    python_casacore_venv: "{{casalibs_install_prefix}}/pycasacore-{{python_casacore_version}}-venv"
+    #Should the virtualenv inherit system Python site-packages?
     python_casacore_venv_site_packages: False
+
+    # Probably no need to change the rest of these:
+    casacore_install_prefix: "{{casalibs_install_prefix}}/casacore-{{casacore_version}}"
+    casarest_install_prefix: "{{casalibs_install_prefix}}/casarest-r{{casarest_svn_rev}}"
+    casalibs_apt_deps: "{{ lookup('file', 'files/casalibs-apt-deps.txt').split() }}"
+    python_casacore_packagedir: "{{casalibs_install_prefix}}/pycasacore-{{python_casacore_version}}-packagedir"
 
   tasks:
     - include: tasks/base.yml tags=base
@@ -32,6 +38,9 @@
     - include: tasks/casacore.yml tags=casacore
     - include: tasks/casarest.yml tags=casarest
     - include: tasks/python-casacore.yml tags=python-casacore
+
+    - include: tasks/python-casacore-venv.yml tags=python-casacore
+      when: python_casacore_venv is defined
 
     - name: Upload script to add casacore / casacore-python to path.
       template:

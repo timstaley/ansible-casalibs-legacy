@@ -1,0 +1,36 @@
+
+- debug: msg="Running venv setup"
+
+- name: Prep a virtualenv with latest pip version
+  pip:
+    name: pip
+    state: latest
+    virtualenv: "{{python_casacore_venv}}"
+    virtualenv_site_packages: "{{python_casacore_venv_site_packages}}"
+
+- name: Install python-casacore into virtualenv of choice
+  pip:
+    name: python-casacore
+    virtualenv: "{{python_casacore_venv}}"
+    virtualenv_site_packages: "{{python_casacore_venv_site_packages}}"
+    extra_args: >
+      --global-option=build_ext
+      --global-option="-L{{casacore_install_prefix}}/lib"
+      --global-option="-I{{casacore_install_prefix}}/include"
+
+- name: Get numpy system version
+  shell: "pip freeze | grep numpy | cut -d '=' -f3"
+  register: system_numpy_ver
+  when: python_casacore_venv_site_packages == False
+  changed_when: False
+
+- set_fact:
+    system_numpy_ver: "{{system_numpy_ver.stdout}}"
+  when: python_casacore_venv_site_packages == False
+
+- name: Install numpy matching system-version into virtualenv if required
+  pip:
+    name: numpy
+    version: "{{system_numpy_ver}}"
+    virtualenv: "{{python_casacore_venv}}"
+  when: python_casacore_venv_site_packages == False
