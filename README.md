@@ -19,5 +19,6 @@ https://launchpad.net/~radio-astro/+archive/ubuntu/main.
     * ~~casacore~~
     * ~~casarest~~
     * ~~python-casacore~~
-    * Bundle a shell-path exporting init-script.
-* Package as a role
+    * ~~Bundle a shell-path exporting init-script.~~
+* ~~Package as a role~~
+* Finish up role-metadata, add travis-testing.

@@ -1,0 +1,40 @@
+---
+# tasks file for casalibs-src
+- name: Install apt dependencies.
+  apt: name={{item}} update_cache=yes cache_valid_time=600
+  with_items: casalibs_apt_deps
+  sudo: yes
+  tags: base
+
+- name: Stat the install dir to check if a new install path was setup
+  stat: path="{{casalibs_install_prefix }}"
+  register: casalibs_install_prefix_stat
+
+- name: Create repo dir with correct permissions
+  file: path={{item}} state=directory mode=0755 owner={{ansible_user_id}}
+  with_items:
+    - "{{ casalibs_repo_dir }}"
+    - "{{ casalibs_install_prefix }}"
+  sudo: yes
+
+- include: casa_measures.yml tags=casa_measures
+- include: casacore.yml tags=casacore
+- include: casarest.yml tags=casarest
+- include: python-casacore.yml tags=python-casacore
+
+- include: python-casacore-venv.yml tags=python-casacore
+  when: python_casacore_venv is defined
+
+- name: Upload script to add casacore / casacore-python to path.
+  template:
+    src: init-casalibs.sh
+    dest: "{{casalibs_install_prefix}}/init-casalibs.sh"
+    mode: 'ugo+r'
+  tags: scripts
+
+- name: Check everything is working OK
+  shell: >
+          . {{casalibs_install_prefix}}/init-casalibs.sh &&
+            python -c "from casacore import measures,tables; print('A-OK');"
+  changed_when: False
+  tags: test

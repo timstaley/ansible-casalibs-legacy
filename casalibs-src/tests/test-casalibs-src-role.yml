@@ -1,0 +1,8 @@
+- hosts: casalibsvm
+
+  pre_tasks:
+    - include: base.yml tags=base
+
+  roles:
+    - { role: casalibs-src, casalibs_install_prefix : '/opt/casafoo' }
+

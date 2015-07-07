@@ -15,6 +15,10 @@
 #- name: Debug
 #  debug: msg="{{casacore_checkout}}"
 
+- name: Clean an old build-dir if install-dir has changed
+  file: path="{{casalibs_repo_dir}}/casacore-{{casacore_version}}/build" state=absent
+  when: casalibs_install_prefix_stat.stat.exists == False
+
 - name: Create casacore build-dir
   file:
     path: "{{casalibs_repo_dir}}/casacore-{{casacore_version}}/build"
@@ -23,8 +27,6 @@
 
 #- name: Debug
 #  debug: msg="{{casacore_build_dir}}"
-
-
 
 - name: Configure casacore cmake build
   command: >

@@ -11,6 +11,10 @@
     export: True
   when: casarest_checkout.stat.exists == False
 
+- name: Clean an old build-dir if install-dir has changed
+  file: path="{{casalibs_repo_dir}}/casarest/build" state=absent
+  when: casalibs_install_prefix_stat.stat.exists == False
+
 - name: Create casarest build-dir
   file:
     path: "{{casalibs_repo_dir}}/casarest/build"
