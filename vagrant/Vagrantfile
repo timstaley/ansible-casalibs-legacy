@@ -11,7 +11,8 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.provision "ansible" do |ansible|
-      ansible.playbook = "../provisioning/casalibs.yml"
+      ansible.playbook = "../casalibs-src/tests/test-casalibs-src-role.yml"
+      ansible.verbose = "vv"
   end
  
   if Vagrant.has_plugin?("vagrant-cachier")

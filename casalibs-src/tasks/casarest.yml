@@ -11,16 +11,11 @@
     export: True
   when: casarest_checkout.stat.exists == False
 
-- name: Clean an old build-dir if install-dir has changed
-  file: path="{{casalibs_repo_dir}}/casarest/build" state=absent
-  when: casalibs_install_prefix_stat.stat.exists == False
-
 - name: Create casarest build-dir
   file:
     path: "{{casalibs_repo_dir}}/casarest/build"
     state: directory
   register: casarest_build_dir
-
 
 - name: Configure casarest cmake build
   command: >
@@ -30,7 +25,7 @@
               -DBUILD_ALL=1
   args:
     chdir: "{{ casarest_build_dir.path }}"
-  when: casarest_build_dir|changed
+  when: casarest_build_dir|changed or casalibs_install_prefix_stat.stat.exists == False
   register: casarest_cmake
   #Ignore errors so we can cleanup the build-dir if this fails:
   ignore_errors: True
@@ -39,7 +34,7 @@
   shell: "make install -j{{ansible_processor_cores}} > make_install_stdout.log"
   args:
     chdir: "{{ casarest_build_dir.path }}"
-  when: casarest_build_dir|changed
+  when: casarest_build_dir|changed or casalibs_install_prefix_stat.stat.exists == False
   register: casarest_make_install
   ignore_errors: True
 

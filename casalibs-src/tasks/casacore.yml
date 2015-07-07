@@ -12,21 +12,11 @@
     creates: "{{casalibs_repo_dir}}/casacore-{{casacore_version}}"
   register: casacore_checkout
 
-#- name: Debug
-#  debug: msg="{{casacore_checkout}}"
-
-- name: Clean an old build-dir if install-dir has changed
-  file: path="{{casalibs_repo_dir}}/casacore-{{casacore_version}}/build" state=absent
-  when: casalibs_install_prefix_stat.stat.exists == False
-
 - name: Create casacore build-dir
   file:
     path: "{{casalibs_repo_dir}}/casacore-{{casacore_version}}/build"
     state: directory
   register: casacore_build_dir
-
-#- name: Debug
-#  debug: msg="{{casacore_build_dir}}"
 
 - name: Configure casacore cmake build
   command: >
@@ -37,7 +27,7 @@
               -DBUILD_PYTHON=ON \
   args:
     chdir: "{{ casacore_build_dir.path }}"
-  when: casacore_build_dir|changed
+  when: casacore_build_dir|changed or casalibs_install_prefix_stat.stat.exists == False
   register: casacore_cmake
   #Ignore errors so we can cleanup the build-dir if this fails:
   ignore_errors: True
@@ -46,7 +36,7 @@
   shell: "make install -j{{ansible_processor_cores}} > make_install_stdout.log"
   args:
     chdir: "{{ casacore_build_dir.path }}"
-  when: casacore_build_dir|changed
+  when: casacore_build_dir|changed or casalibs_install_prefix_stat.stat.exists == False
   register: casacore_make_install
   ignore_errors: True
 
