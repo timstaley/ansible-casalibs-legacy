@@ -8,3 +8,4 @@ casalibs_install_prefix: "/opt/soft/casalibs"
 # Default for python_casacore_venv is 'undefined':
 #python_casacore_venv:
 python_casacore_venv_site_packages: False
+casalibs_build_ncores: "{{ansible_processor_cores}}"

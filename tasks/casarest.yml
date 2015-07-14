@@ -31,7 +31,7 @@
   ignore_errors: True
 
 - name: "casarest make install."
-  shell: "make install -j{{ansible_processor_cores}} > make_install_stdout.log"
+  shell: "make install -j{{casalibs_build_ncores}} > make_install_stdout.log"
   args:
     chdir: "{{ casarest_build_dir.path }}"
   when: casarest_build_dir|changed or casalibs_install_prefix_stat.stat.exists == False

@@ -1,0 +1,9 @@
+- hosts: casalibsvm
+
+  pre_tasks:
+    - include: base.yml tags=base
+
+  roles:
+    - { role: ../../ansible-casalibs-src, casalibs_repo_dir: ~/repos,
+        casalibs_build_ncores: 2}
+
