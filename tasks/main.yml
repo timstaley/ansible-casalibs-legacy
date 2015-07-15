@@ -32,7 +32,7 @@
     mode: 'ugo+r'
   tags: scripts
 
-- name: Check everything is working OK
+- name: Check casalibs import OK
   shell: >
           . {{casalibs_install_prefix}}/init-casalibs.sh &&
             python -c "from casacore import measures,tables; print('A-OK');"
