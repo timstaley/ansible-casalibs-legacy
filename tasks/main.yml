@@ -30,12 +30,12 @@
     src: "{{item}}"
     dest: "{{casalibs_install_prefix}}/{{item.split('.')[0]}}-{{casacore_version}}.sh"
     mode: 'ugo+r'
-  tags: scripts
   with_items:
     - init-casalibs.j2
     - init-casabinaries.j2
   register:
     casacore_init_scripts
+  tags: scripts
 
 # Should just use src: item.dest, but this is broken because of issue
 # https://github.com/ansible/ansible/issues/10190

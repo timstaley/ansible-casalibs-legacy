@@ -4,7 +4,7 @@ casacore_version: "2.0.1"
 casarest_svn_rev: "8765"
 python_casacore_version: "2.0.0"
 casalibs_repo_dir: "/opt/repos"
-casalibs_install_prefix: "/opt/soft/casalibs"
+casalibs_install_prefix: "/opt/casalibs"
 # Default for python_casacore_venv is 'undefined':
 #python_casacore_venv:
 python_casacore_venv_site_packages: False
