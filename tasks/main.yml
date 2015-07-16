@@ -27,10 +27,13 @@
 
 - name: Upload script to add casacore / casacore-python to path.
   template:
-    src: init-casalibs.sh
-    dest: "{{casalibs_install_prefix}}/init-casalibs.sh"
+    src: "{{item}}"
+    dest: "{{casalibs_install_prefix}}/{{item}}"
     mode: 'ugo+r'
   tags: scripts
+  with_items:
+    - init-casalibs.sh
+    - init-casabinaries.sh
 
 - name: Check casalibs import OK
   shell: >
