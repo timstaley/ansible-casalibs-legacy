@@ -28,12 +28,24 @@
 - name: Upload script to add casacore / casacore-python to path.
   template:
     src: "{{item}}"
-    dest: "{{casalibs_install_prefix}}/{{item}}"
+    dest: "{{casalibs_install_prefix}}/{{item.split('.')[0]}}-{{casacore_version}}.sh"
     mode: 'ugo+r'
   tags: scripts
   with_items:
-    - init-casalibs.sh
-    - init-casabinaries.sh
+    - init-casalibs.j2
+    - init-casabinaries.j2
+  register:
+    casacore_init_scripts
+
+# Should just use src: item.dest, but this is broken because of issue
+# https://github.com/ansible/ansible/issues/10190
+- name: Add 'default' symlink to latest installed casacore inits
+  file:
+    src: "{{casalibs_install_prefix}}/{{item.item.split('.')[0]}}-{{casacore_version}}.sh"
+    dest: "{{casalibs_install_prefix}}/{{item.item.split('.')[0]}}.sh"
+    state: link
+  with_items: casacore_init_scripts.results
+  tags: scripts
 
 - name: Check casalibs import OK
   shell: >
