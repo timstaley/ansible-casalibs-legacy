@@ -8,8 +8,8 @@
     version: "{{python_casacore_version}}"
     extra_args: >
       --global-option=build_ext
-      --global-option="-L{{casacore_install_prefix}}/lib"
-      --global-option="-I{{casacore_install_prefix}}/include"
+      --global-option="-L{{casacore_install_path}}/lib"
+      --global-option="-I{{casacore_install_path}}/include"
       -t "{{python_casacore_packagedir}}"
   register: python_casacore_dir_install
   when: python_casacore_dirstat.stat.exists == False

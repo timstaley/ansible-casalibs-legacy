@@ -15,8 +15,8 @@
     virtualenv_site_packages: "{{python_casacore_venv_site_packages}}"
     extra_args: >
       --global-option=build_ext
-      --global-option="-L{{casacore_install_prefix}}/lib"
-      --global-option="-I{{casacore_install_prefix}}/include"
+      --global-option="-L{{casacore_install_path}}/lib"
+      --global-option="-I{{casacore_install_path}}/include"
 
 - name: Get numpy system version
   shell: "pip freeze | grep numpy | cut -d '=' -f3"
