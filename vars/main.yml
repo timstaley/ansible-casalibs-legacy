@@ -1,6 +1,6 @@
 ---
 # vars file for casalibs-src
 casacore_install_prefix: "{{casalibs_install_prefix}}/casacore-{{casacore_version}}"
-casarest_install_prefix: "{{casalibs_install_prefix}}/casarest-r{{casarest_svn_rev}}"
+casarest_install_prefix: "{{casalibs_install_prefix}}/casarest-r{{casarest_svn_rev}}_with-core-{{casacore_version}}"
 casalibs_apt_deps: "{{ lookup('file', 'casalibs-apt-deps.txt').split() }}"
-python_casacore_packagedir: "{{casalibs_install_prefix}}/pycasacore-{{python_casacore_version}}-packagedir"
+python_casacore_packagedir: "{{casalibs_install_prefix}}/pycasacore-{{python_casacore_version}}_with-core-{{casacore_version}}_packagedir"
