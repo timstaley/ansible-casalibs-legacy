@@ -1,6 +1,6 @@
 ---
 # defaults file for casalibs-src
-casacore_version: "2.0.1"
+casacore_version: "2.0.3"
 casarest_svn_rev: "8765"
 python_casacore_version: "2.0.0"
 casalibs_repo_dir: "/opt/repos"
