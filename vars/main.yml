@@ -1,5 +1,6 @@
 ---
 # vars file for casalibs-src
+casacore_version: "{{casacore_github_version}}"
 casacore_install_path: "{{casalibs_install_prefix}}/casacore-{{casacore_version}}"
 casarest_install_path: "{{casalibs_install_prefix}}/casarest-r{{casarest_svn_rev}}_with-core-{{casacore_version}}"
 casalibs_apt_deps: "{{ lookup('file', 'casalibs-apt-deps.txt').split() }}"

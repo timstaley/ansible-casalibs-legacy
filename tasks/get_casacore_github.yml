@@ -1,0 +1,17 @@
+- set_fact:
+    casacore_checkout_path: "{{ casalibs_repo_dir }}/casacore-{{casacore_version}}"
+
+- name: Grab casacore tarball from github
+  get_url:
+    url: "https://github.com/casacore/casacore/archive/v{{casacore_version}}.tar.gz"
+    dest: "{{casalibs_repo_dir}}/casacore-v{{casacore_version}}.tar.gz"
+  register: casacore_tarball
+
+- name: Unpack casacore tarball
+  unarchive:
+    copy: no
+    src: "{{ casacore_tarball.dest }}"
+    dest: "{{ casalibs_repo_dir }}"
+    creates: "{{ casacore_checkout_path }}"
+#    creates: "{{casalibs_repo_dir}}/casacore-{{casacore_version}}"
+  register: casacore_checkout

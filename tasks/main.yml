@@ -15,7 +15,8 @@
   sudo: yes
 
 - include: casa_measures.yml tags=casa_measures
-- include: casacore.yml tags=casacore
+- include: get_casacore_github.yml tags=casacore
+- include: build_casacore.yml tags=casacore
 - include: casarest.yml tags=casarest
 - include: python-casacore.yml tags=python-casacore
 

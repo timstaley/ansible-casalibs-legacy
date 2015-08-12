@@ -1,19 +1,22 @@
+- set_fact:
+    casarest_checkout_path: "{{ casalibs_repo_dir }}/casarest-r{{ casarest_svn_rev }}"
+
 - name: Stat casarest checkout dir
   stat:
-    path: "{{ casalibs_repo_dir }}/casarest"
-  register: casarest_checkout
+    path: "{{ casarest_checkout_path }}"
+  register: casarest_checkout_stat
 
 - name: Checkout casarest svn repo
   subversion:
     repo: https://svn.astron.nl/casarest
-    dest: "{{ casalibs_repo_dir }}/casarest"
+    dest: "{{ casarest_checkout_path }}"
     revision: "{{ casarest_svn_rev }}"
     export: True
-  when: casarest_checkout.stat.exists == False
+  when: casarest_checkout_stat.stat.exists == False
 
 - name: Create casarest build-dir
   file:
-    path: "{{casalibs_repo_dir}}/casarest/build"
+    path: "{{ casarest_checkout_path }}/build"
     state: directory
   register: casarest_build_dir
 
@@ -23,7 +26,7 @@
 
 - name: Configure casarest cmake build
   command: >
-            cmake {{casalibs_repo_dir}}/casarest/trunk/casarest \
+            cmake {{ casarest_checkout_path }}/trunk/casarest \
               -DCMAKE_INSTALL_PREFIX={{casarest_install_path}} \
               -DCASACORE_ROOT_DIR={{casacore_install_path}} \
               -DBUILD_ALL=1

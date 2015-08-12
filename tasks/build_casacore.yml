@@ -1,20 +1,7 @@
-- name: Grab casacore tarball
-  get_url:
-    url: "https://github.com/casacore/casacore/archive/v{{casacore_version}}.tar.gz"
-    dest: "{{casalibs_repo_dir}}/casacore-v{{casacore_version}}.tar.gz"
-  register: casacore_tarball
-
-- name: Unpack casacore tarball
-  unarchive:
-    copy: no
-    src: "{{ casacore_tarball.dest }}"
-    dest: "{{casalibs_repo_dir}}/"
-    creates: "{{casalibs_repo_dir}}/casacore-{{casacore_version}}"
-  register: casacore_checkout
 
 - name: Create casacore build-dir
   file:
-    path: "{{casalibs_repo_dir}}/casacore-{{casacore_version}}/build"
+    path: "{{ casacore_checkout_path }}/build"
     state: directory
   register: casacore_build_dir
 
