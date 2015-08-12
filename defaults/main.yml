@@ -1,16 +1,15 @@
 ---
-# defaults file for casalibs-src
+# defaults file for casalibs-legacy
 
 #Typically only need to override these two default dirs:
 repo_dir: "/opt/repos"
 default_install_prefix: "/opt"
 
-casacore_github_version: "2.0.1"
+casacore_googlecode_svn_rev: "21573"
 casarest_svn_rev: "8765"
-python_casacore_version: "2.0.0"
+pyrap_svn_rev: "360"
+
 casalibs_repo_prefix: "{{ repo_dir }}/casalibs"
-casalibs_install_prefix: "{{ default_install_prefix }}/casalibs"
-# Default for python_casacore_venv is 'undefined':
-#python_casacore_venv:
-python_casacore_venv_site_packages: False
+casalibs_legacy_install_prefix: "{{ default_install_prefix }}/casalibs-legacy"
+
 casalibs_build_ncores: "{{ansible_processor_cores}}"

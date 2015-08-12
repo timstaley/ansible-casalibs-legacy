@@ -1,0 +1,17 @@
+
+- set_fact:
+    casacore_checkout_path: "{{ casalibs_repo_prefix }}/casacore-{{casacore_version}}/casacore"
+
+- name: Stat casacore checkout dir
+  stat:
+    path: "{{ casacore_checkout_path }}"
+  register: casarest_checkout_stat
+
+- name: Checkout casacore svn repo
+  subversion:
+    repo: http://casacore.googlecode.com/svn/trunk
+    dest: "{{ casacore_checkout_path }}"
+    revision: "{{ casacore_googlecode_svn_rev }}"
+    export: True
+  when: casarest_checkout_stat.stat.exists == False
+

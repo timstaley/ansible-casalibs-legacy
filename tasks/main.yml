@@ -11,22 +11,20 @@
   file: path={{item}} state=directory mode=0755 owner={{ansible_user_id}}
   with_items:
     - "{{ casalibs_repo_prefix }}"
-    - "{{ casalibs_install_prefix }}"
+    - "{{ casalibs_legacy_install_prefix }}"
   sudo: yes
 
 - include: casa_measures.yml tags=casa_measures
-- include: get_casacore_github.yml tags=casacore
+- include: get_casacore_googlecode.yml tags=casacore
 - include: build_casacore.yml tags=casacore
 - include: casarest.yml tags=casarest
-- include: python-casacore.yml tags=python-casacore
+- include: pyrap.yml tags=pyrap
 
-- include: python-casacore-venv.yml tags=python-casacore
-  when: python_casacore_venv is defined
 
 - name: Upload script to add casacore / casacore-python to path.
   template:
     src: "{{item}}"
-    dest: "{{casalibs_install_prefix}}/{{item.split('.')[0]}}-{{casacore_version}}.sh"
+    dest: "{{casalibs_legacy_install_prefix}}/{{item.split('.')[0]}}-{{casacore_version}}.sh"
     mode: 'ugo+r'
   with_items:
     - init-casalibs.j2
@@ -39,14 +37,15 @@
 # https://github.com/ansible/ansible/issues/10190
 - name: Add 'default' symlink to latest installed casacore inits
   file:
-    src: "{{casalibs_install_prefix}}/{{item.item.split('.')[0]}}-{{casacore_version}}.sh"
-    dest: "{{casalibs_install_prefix}}/{{item.item.split('.')[0]}}.sh"
+    src: "{{casalibs_legacy_install_prefix}}/{{item.item.split('.')[0]}}-{{casacore_version}}.sh"
+    dest: "{{casalibs_legacy_install_prefix}}/{{item.item.split('.')[0]}}.sh"
     state: link
   with_items: casacore_init_scripts.results
   tags: scripts
 
+
 - name: Export casalibs_install_prefix to a 'host-fact' type variable
   set_fact:
-    casalibs_install_prefix: "{{ casalibs_install_prefix }}"
+    casalibs_install_prefix: "{{ casalibs_legacy_install_prefix }}"
 
 - include: check_casalibs_ok.yml tags=test

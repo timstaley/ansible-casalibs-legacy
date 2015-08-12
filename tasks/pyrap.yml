@@ -1,0 +1,70 @@
+
+- set_fact:
+    pyrap_version: "r{{pyrap_svn_rev}}"
+
+- set_fact:
+    pyrap_checkout_path: "{{ casalibs_repo_prefix }}/pyrap-{{pyrap_version}}/pyrap"
+
+- name: Stat pyrap checkout dir
+  stat:
+    path: "{{ pyrap_checkout_path }}"
+  register: pyrap_checkout_stat
+
+- name: Checkout pyrap svn repo
+  subversion:
+    repo: http://pyrap.googlecode.com/svn/trunk
+    dest: "{{ pyrap_checkout_path }}"
+    revision: "{{ pyrap_svn_rev }}"
+    export: True
+  when: pyrap_checkout_stat.stat.exists == False
+
+
+#- name: Create pyrap build-dir
+#  file:
+#    path: "{{ pyrap_checkout_path }}/build"
+#    state: directory
+#  register: pyrap_build_dir
+#
+- name: Stat the install path to check if new prefix or version configured
+  stat: path="{{ pyrap_install_path }}"
+  register: pyrap_install_path_stat
+
+- name: Run pyrap build and install
+  shell: >
+          ./batchbuild-trunk.py  --prefix={{ pyrap_install_path}} \
+          --casacore-root={{ casacore_install_path }} \
+          --python-prefix={{ pyrap_install_path }}/pythonpackage \
+          install > batchbuild_stdout.log
+  args:
+    chdir: "{{ pyrap_checkout_path }}"
+  when: pyrap_install_path_stat.stat.exists == False
+  register: pyrap_build
+  #Ignore errors so we can cleanup the build-dir if this fails:
+#  ignore_errors: True
+
+#- name: "pyrap make install."
+#  shell: "make install -j{{casalibs_build_ncores}} > make_install_stdout.log"
+#  args:
+#    chdir: "{{ pyrap_build_dir.path }}"
+#  when: pyrap_build_dir|changed or pyrap_install_path_stat.stat.exists == False
+#  register: pyrap_make_install
+#  ignore_errors: True
+
+
+#- name: Clean up failed build
+#  file: path="{{ pyrap_build_dir.path }}" state=absent
+#  when: pyrap_cmake|failed or pyrap_make_install|failed
+
+#- name: Fail a broken build
+#  fail: msg "pyrap build failed"
+#  when: pyrap_cmake|failed or pyrap_make_install|failed
+
+- name: Unpack pyrap .pth file
+  script: >
+          unpack_pyrap.sh
+            {{ pyrap_install_path }}/pythonpackage/easy-install.pth
+            {{ pyrap_install_path }}/unpacked
+            creates="{{ pyrap_install_path }}/unpacked/pyrap"
+
+- set_fact:
+    pyrap_unpacked_path: "{{ pyrap_install_path }}/unpacked"

@@ -4,6 +4,6 @@
     - include: base.yml tags=base
 
   roles:
-    - { role: ../../casalibs-src, casalibs_repo_prefix: ~/repos,
+    - { role: ../../casalibs-legacy, casalibs_repo_prefix: ~/repos,
         casalibs_build_ncores: 2}
 
