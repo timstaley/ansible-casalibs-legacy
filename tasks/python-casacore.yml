@@ -1,5 +1,5 @@
 - name: Check if python-casacore package dir has been previously created
-  stat: path="{{python_casacore_packagedir}}"
+  stat: path="{{ python_casacore_packagedir }}"
   register: python_casacore_dirstat
 
 - name: python-casacore - build extensions and install
@@ -8,9 +8,9 @@
     version: "{{python_casacore_version}}"
     extra_args: >
       --global-option=build_ext
-      --global-option="-L{{casacore_install_path}}/lib"
-      --global-option="-I{{casacore_install_path}}/include"
-      -t "{{python_casacore_packagedir}}"
+      --global-option="-L{{ casacore_install_path }}/lib"
+      --global-option="-I{{ casacore_install_path }}/include"
+      -t "{{ python_casacore_packagedir }}"
   register: python_casacore_dir_install
   when: python_casacore_dirstat.stat.exists == False
 

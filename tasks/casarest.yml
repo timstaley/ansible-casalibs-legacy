@@ -1,5 +1,5 @@
 - set_fact:
-    casarest_checkout_path: "{{ casalibs_repo_dir }}/casarest-r{{ casarest_svn_rev }}"
+    casarest_checkout_path: "{{ casalibs_repo_prefix }}/casarest-r{{ casarest_svn_rev }}"
 
 - name: Stat casarest checkout dir
   stat:
@@ -16,7 +16,7 @@
 
 - name: Create casarest build-dir
   file:
-    path: "{{ casarest_checkout_path }}/build"
+    path: "{{ casarest_checkout_path }}/build_with_core-{{ casacore_version }}"
     state: directory
   register: casarest_build_dir
 

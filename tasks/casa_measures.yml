@@ -1,6 +1,6 @@
 - name: Create casa_measures dir
   file:
-    path: "{{casalibs_repo_dir}}/casa_measures/"
+    path: "{{casalibs_repo_prefix}}/casa_measures/"
     state: directory
   register: casa_measures_dir
   tags:

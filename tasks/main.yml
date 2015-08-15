@@ -10,7 +10,7 @@
 - name: Create repo dir with correct permissions
   file: path={{item}} state=directory mode=0755 owner={{ansible_user_id}}
   with_items:
-    - "{{ casalibs_repo_dir }}"
+    - "{{ casalibs_repo_prefix }}"
     - "{{ casalibs_install_prefix }}"
   sudo: yes
 
