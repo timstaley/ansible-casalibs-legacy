@@ -1,10 +1,15 @@
 ---
 # defaults file for casalibs-src
+
+#Typically only need to override these two default dirs:
+repo_dir: "/opt/repos"
+default_install_prefix: "/opt"
+
 casacore_github_version: "2.0.1"
 casarest_svn_rev: "8765"
 python_casacore_version: "2.0.0"
-casalibs_repo_prefix: "/opt/repos"
-casalibs_install_prefix: "/opt/casalibs"
+casalibs_repo_prefix: "{{ repo_dir }}/casalibs"
+casalibs_install_prefix: "{{ default_install_prefix }}/casalibs"
 # Default for python_casacore_venv is 'undefined':
 #python_casacore_venv:
 python_casacore_venv_site_packages: False
