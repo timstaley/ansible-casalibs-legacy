@@ -51,3 +51,8 @@
             python -c "from casacore import measures,tables; print('A-OK');"
   changed_when: False
   tags: test
+
+- name: Export casalibs_install_prefix to a 'host-fact' type variable
+  set_fact:
+    casalibs_install_prefix: "{{ casalibs_install_prefix }}"
+
