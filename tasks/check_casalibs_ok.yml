@@ -1,0 +1,8 @@
+- name: Check casalibs import OK
+  shell: >
+          unset LD_LIBRARY_PATH &&
+          unset PYTHONPATH &&
+          . {{ casalibs_install_prefix }}/init-casalibs.sh &&
+            python -c "from casacore import measures,tables; print('A-OK');"
+  changed_when: False
+  tags: test

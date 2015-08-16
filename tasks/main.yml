@@ -45,14 +45,8 @@
   with_items: casacore_init_scripts.results
   tags: scripts
 
-- name: Check casalibs import OK
-  shell: >
-          . {{casalibs_install_prefix}}/init-casalibs.sh &&
-            python -c "from casacore import measures,tables; print('A-OK');"
-  changed_when: False
-  tags: test
-
 - name: Export casalibs_install_prefix to a 'host-fact' type variable
   set_fact:
     casalibs_install_prefix: "{{ casalibs_install_prefix }}"
 
+- include: check_casalibs_ok.yml tags=test
